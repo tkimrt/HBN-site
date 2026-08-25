@@ -89,6 +89,14 @@ function parseBlocks(body: string): ReactNode[] {
       continue;
     }
 
+    // `# h1` maps to h2: the page already renders the title as the only h1,
+    // and an unhandled `#` line previously fell through to the paragraph
+    // collector, which broke without consuming it — an infinite loop.
+    if (line.startsWith("# ")) {
+      nodes.push(<h2 key={i}>{inline(line.slice(2), `h1-${i}`)}</h2>);
+      i += 1;
+      continue;
+    }
     if (line.startsWith("### ")) {
       nodes.push(<h3 key={i}>{inline(line.slice(4), `h3-${i}`)}</h3>);
       i += 1;
@@ -150,6 +158,12 @@ function parseBlocks(body: string): ReactNode[] {
         break;
       }
       paragraph.push(next);
+      i += 1;
+    }
+    if (paragraph.length === 0) {
+      // The line matched no block and the paragraph collector refused it.
+      // Consume it as plain text — the outer loop must always advance.
+      paragraph.push(lines[i].trim());
       i += 1;
     }
     nodes.push(<p key={`p-${i}`}>{inline(paragraph.join(" "), `p-${i}`)}</p>);

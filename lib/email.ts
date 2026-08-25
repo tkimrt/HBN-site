@@ -1,5 +1,3 @@
-import { env } from "cloudflare:workers";
-
 /**
  * Outbound email for contact-form notifications.
  *
@@ -8,7 +6,7 @@ import { env } from "cloudflare:workers";
  * alongside it. With no provider configured this reports "skipped" rather than
  * failing, so the form keeps working before mail is set up.
  *
- * Configure via Worker secrets (a `.env` at the project root in local dev):
+ * Configure via Vercel environment variables (a `.env` locally):
  *   RESEND_API_KEY   from https://resend.com — the only required value
  *   CONTACT_TO       defaults to admin@hbnnet.com
  *   CONTACT_FROM     defaults to website@hbnnet.com; the domain must be
@@ -18,8 +16,7 @@ import { env } from "cloudflare:workers";
 export const DEFAULT_CONTACT_TO = "admin@hbnnet.com";
 
 function setting(key: string): string {
-  const value = (env as Record<string, unknown>)[key];
-  return typeof value === "string" ? value.trim() : "";
+  return (process.env[key] ?? "").trim();
 }
 
 export function contactRecipient(): string {

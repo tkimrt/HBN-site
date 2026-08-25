@@ -1,7 +1,8 @@
-import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { GlobalWorkerOptions, getDocument } from "pdfjs-dist";
 
-GlobalWorkerOptions.workerSrc = workerSrc;
+// Served from public/ — copied from node_modules/pdfjs-dist/build/ (the Vite
+// `?url` import vinext supported doesn't exist in Next). Re-copy on upgrade.
+GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 type Line = { y: number; x: number; width: number; text: string };
 

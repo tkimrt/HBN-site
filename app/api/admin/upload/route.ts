@@ -1,4 +1,4 @@
-import { getBucket } from "../../../../db/storage";
+import { storeFile } from "../../../../db/storage";
 import { slugify } from "../../../../lib/articles";
 
 // TODO(auth): ungated alongside the rest of /admin. Gate before launch.
@@ -56,14 +56,13 @@ export async function POST(request: Request) {
   const base = slugify(file.name.slice(0, dot > -1 ? dot : undefined)) || kind;
   const key = `${spec.folder}/${base}${extension}`;
 
+  let url: string;
   try {
-    await getBucket().put(key, await file.arrayBuffer(), {
-      httpMetadata: { contentType: file.type || "application/octet-stream" },
-    });
+    url = await storeFile(key, await file.arrayBuffer(), file.type || "application/octet-stream");
   } catch (error) {
     const message = error instanceof Error ? error.message : "Upload failed";
     return Response.json({ error: message }, { status: 500 });
   }
 
-  return Response.json({ path: `/files/${key}`, name: `${base}${extension}`, kind });
+  return Response.json({ path: url, name: `${base}${extension}`, kind });
 }

@@ -1,21 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-/**
- * Renders the built worker without D1 or R2 bound. That is the important case:
- * before the database is provisioned the site must still serve the full
- * migrated article archive rather than erroring.
- */
+/** Fetches from the `next start` server booted by tests/setup.mjs. */
 async function render(path) {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} }
-  );
+  return fetch(`${globalThis.__SITE__}${path}`, { headers: { accept: "text/html" } });
 }
 
 test("home page renders the brand and pulls in real articles", async () => {
@@ -71,5 +59,30 @@ test("withdrawn articles are gone from the archive and the index", async () => {
   const html = await (await render("/articles")).text();
   for (const title of ["Evolve or Perish", "Attention All Whiners"]) {
     assert.ok(!html.includes(title), `"${title}" should be withdrawn`);
+  }
+});
+
+test("an article body starting with an h1 renders instead of looping", async () => {
+  // Regression: `# h1` used to fall through the block handlers into the
+  // paragraph collector without consuming the line — an infinite loop that
+  // took the whole server down with it.
+  const post = await fetch(`${globalThis.__SITE__}/api/admin/articles`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      slug: "h1-regression-test", title: "H1 Regression Test", kicker: "",
+      category: "Strategy", author: "Test", date: "2026-08-25", cover: "", pdf: "",
+      body: "# A top-level heading\n\nAnd a paragraph.", published: true,
+    }),
+  });
+  assert.equal(post.status, 201);
+  try {
+    const page = await render("/articles/h1-regression-test");
+    assert.equal(page.status, 200);
+    const html = await page.text();
+    assert.match(html, /A top-level heading/);
+    assert.match(html, /And a paragraph\./);
+  } finally {
+    await fetch(`${globalThis.__SITE__}/api/admin/articles?slug=h1-regression-test`, { method: "DELETE" });
   }
 });

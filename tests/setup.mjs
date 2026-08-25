@@ -1,21 +1,34 @@
-import { registerHooks } from "node:module";
+import { spawn } from "node:child_process";
+import { setTimeout as sleep } from "node:timers/promises";
 
 /**
- * The built worker imports `cloudflare:workers`, which only exists inside the
- * Workers runtime. Stub it with an empty `env` so the tests exercise the site's
- * no-bindings path — exactly what visitors get before D1 and R2 are provisioned.
+ * Boots the production build (`next start`) once for the whole test run and
+ * exposes its origin as globalThis.__SITE__. Tests fetch real HTTP responses —
+ * the same thing Vercel serves.
  */
-const STUB = "cloudflare-stub:workers";
+const PORT = 4123;
 
-registerHooks({
-  resolve(specifier, context, next) {
-    if (specifier === "cloudflare:workers") return { url: STUB, shortCircuit: true };
-    return next(specifier, context);
-  },
-  load(url, context, next) {
-    if (url === STUB) {
-      return { format: "module", source: "export const env = {};", shortCircuit: true };
-    }
-    return next(url, context);
-  },
+const server = spawn("npx", ["next", "start", "-p", String(PORT)], {
+  // Fully detached from our stdio and unref'd, so the test process can exit
+  // the moment the suite finishes instead of being held open by child pipes.
+  stdio: "ignore",
+  env: { ...process.env },
 });
+server.unref();
+process.on("exit", () => server.kill("SIGTERM"));
+
+let ready = false;
+for (let i = 0; i < 60 && !ready; i++) {
+  try {
+    await fetch(`http://localhost:${PORT}/`);
+    ready = true;
+  } catch {
+    await sleep(500);
+  }
+}
+if (!ready) {
+  console.error("next start did not become ready on port", PORT);
+  process.exit(1);
+}
+
+globalThis.__SITE__ = `http://localhost:${PORT}`;

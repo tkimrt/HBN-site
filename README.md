@@ -145,72 +145,45 @@ On the hosting platform the control plane applies whatever is in `drizzle/`. Eve
 read path degrades gracefully — with no bindings the site still serves the full
 compiled archive, which is what `npm test` exercises.
 
-## Deploying to Cloudflare
+## Hosting
 
-Bindings live in `wrangler.jsonc` — one file, used by both `npm run dev` and
-`npm run deploy`. (Declaring them in `vite.config.ts` instead duplicates
-`compatibility_flags` and the deploy API rejects it with error 10021.)
+The app is a standard Next.js 16 project. It runs on Vercel; the client's DNS
+stays at Network Solutions.
 
-Already provisioned on the the site owner account:
-
-- **D1 `hbn-db`** — `08605aa6-66d5-472a-8b3e-72d791c4e6f2`, migrations applied
-- **Worker name** — `hbn-website`
-
-### First-time account setup
-
-```bash
-npx wrangler login
-```
-
-Register a workers.dev subdomain once per account, in the dashboard under
-**Workers & Pages → Overview**. Without it `wrangler deploy` fails with
-"You need to register a workers.dev subdomain before publishing".
-
-R2 is opt-in and must be enabled at **dash.cloudflare.com → R2** (Cloudflare asks
-for a payment method even though the first 10 GB are free). Then:
-
-```bash
-npx wrangler r2 bucket create hbn-files
-```
-
-and uncomment the `r2_buckets` block in `wrangler.jsonc`. Until that is done the
-site runs fine; only admin uploads are unavailable, and `/admin` says so.
+- **Database** — libSQL via Drizzle. Local dev uses `file:.data/local.db`
+  (created by `npm run db:migrate`). Production uses Turso: set `DATABASE_URL`
+  (libsql://…) and `DATABASE_AUTH_TOKEN`.
+- **Uploads** — Vercel Blob in production (`BLOB_READ_WRITE_TOKEN`, added by
+  attaching a Blob store to the project). Local dev writes to `.data/uploads/`.
+- **Email** — Resend, unchanged: `RESEND_API_KEY`, `CONTACT_FROM`, `CONTACT_TO`.
 
 ### Deploying
 
-```bash
-npm run deploy
-```
+1. `npx vercel` from the project root (first run links the project; needs the
+   Pro plan — agency work counts as commercial use).
+2. Create a Turso database, run
+   `DATABASE_URL=libsql://… DATABASE_AUTH_TOKEN=… npm run db:migrate`,
+   then `node scripts/import-data.mjs` with the same env to copy events and
+   enquiries across from the old Cloudflare D1 database.
+3. Add the env vars above in the Vercel project settings, plus a Blob store.
+4. `npx vercel --prod`.
 
-### Database
+### Pointing hbnnet.com at it (records at Network Solutions)
 
-The local Miniflare database and the remote D1 are separate. After changing
-`db/schema.ts`:
+    A      @     76.76.21.21
+    CNAME  www   cname.vercel-dns.com
 
-```bash
-npm run db:generate
-node scripts/apply-local-migrations.mjs                  # local
-CF_D1_DATABASE_NAME=hbn-db npm run db:migrate:remote     # remote
-```
+Nameservers do not move. Add both hostnames to the Vercel project first so it
+can issue certificates. Mail records (MX/SPF/DKIM) are untouched.
 
-### Secrets
+### Legacy Cloudflare deployment
 
-```bash
-npx wrangler secret put RESEND_API_KEY
-```
+The previous Workers deployment (hbn-website.realtorch.workers.dev) still runs
+the pre-migration build and keeps working until the Vercel cutover. Do **not**
+run `npm run deploy:cloudflare` from this tree — the db and storage layers no
+longer target D1/R2. The wrangler config and worker/ entry are kept only until
+the cutover is confirmed, then can be deleted.
 
-### Custom domain
-
-hbnnet.com is registered at Network Solutions with DNS at worldnic. Serving the
-site from it needs the **nameservers** moved to Cloudflare — not a registrar
-transfer. Cloudflare then becomes authoritative for MX, SPF, DKIM and DMARC too,
-so export the full zone from Network Solutions first and reconcile it against
-what Cloudflare imports before flipping. The DKIM selector is not publicly
-discoverable; get it from the mail host. Set `mail.hbnnet.com` to DNS-only.
-
-Costs sit inside the free tier at this traffic. The limit to watch is **10ms CPU
-per request** on the free plan when server-rendering the longest articles; the $5
-Workers Paid plan raises it to 30s.
 
 ## Before launch
 

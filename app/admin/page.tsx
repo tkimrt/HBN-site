@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowIcon, PageShell } from "../components";
-import { hasBucket, hasDatabase } from "../../db/storage";
+import { hasDatabase, hasStorage } from "../../db/storage";
 import { formatArticleDate, listArticles } from "../../lib/articles";
 
 export const metadata = { title: "Admin" };
@@ -31,11 +31,11 @@ export default async function AdminPage() {
     <section className="admin-status" aria-label="Environment status">
       <div className={hasDatabase() ? "is-ok" : "is-warn"}>
         <strong>Database</strong>
-        <span>{hasDatabase() ? "D1 connected" : "D1 not bound — publishing is unavailable"}</span>
+        <span>{hasDatabase() ? "Database connected" : "Database not configured — publishing is unavailable"}</span>
       </div>
-      <div className={hasBucket() ? "is-ok" : "is-warn"}>
+      <div className={hasStorage() ? "is-ok" : "is-warn"}>
         <strong>File storage</strong>
-        <span>{hasBucket() ? "R2 connected" : "R2 not bound — PDF uploads will fail"}</span>
+        <span>{hasStorage() ? "File storage connected" : "File storage not configured — uploads will fail"}</span>
       </div>
       <div className="is-warn">
         <strong>Access</strong>
