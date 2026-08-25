@@ -7,10 +7,10 @@ const process = [["01", "Assess", "Financial performance, organization, market p
 
 export default function ConsultingPage() {
   return <PageShell>
-    <SubpageHero eyebrow="Coaching & consulting" title="Your competitive advantage, embedded." intro="We don’t drop in for a day and hand you a binder. We become part of your team and stay close to the decisions that move the business." image="/images/blueprint-review.jpg" imageAlt="A team reviewing architectural plans" tone="clay" />
+    <SubpageHero eyebrow="Coaching & consulting" title="Your competitive advantage, embedded." intro="We become part of your team and stay close to the decisions that move the business." image="/images/consulting.jpg" imageAlt="A team reviewing architectural plans" tone="clay" />
     <section className="functions-section"><SectionHeading eyebrow="The whole business" title="All 15 functions. One operating system." text="Most builders are strong in three or four and winging the rest. We close the gaps." /><div className="function-grid">{functions.map((item, i) => <div key={item}><span>{String(i + 1).padStart(2, "0")}</span>{item}</div>)}</div></section>
     <section className="process-section"><SectionHeading eyebrow="How we work" title="Stay close. Get specific. Measure what matters." /><div className="process-grid">{process.map(([n, title, copy]) => <article key={n}><span>{n}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></section>
-    <section className="quote-block compact"><div className="quote-symbol">“</div><blockquote>Al’s ability to appraise the current opportunity or issue and immediately provide practical solutions is unlike anything else in this industry.</blockquote><p>Client testimonial</p></section>
+    <section className="quote-block compact"><div className="quote-symbol">“</div><blockquote>Al’s ability to appraise the current opportunity or issue and immediately provide practical solutions is unlike anything else in this industry.</blockquote><p>Bob Meyer · Bob Meyer Communities</p></section>
   </PageShell>;
 }
 

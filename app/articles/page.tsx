@@ -1,20 +1,78 @@
-import { PageShell, SubpageHero } from "../components";
+import Link from "next/link";
+import { ArrowIcon, PageShell, SubpageHero } from "../components";
+import { excerpt } from "../markdown";
+import { formatArticleDate, listArticles } from "../../lib/articles";
 
 export const metadata = { title: "Articles & Insights" };
 
-const posts = [
-  ["Pricing", "What builders can learn from restaurants about pricing", "The Ruth’s Chris Principle and what menu engineering teaches us about options, upgrades, and lot premiums."],
-  ["Sales", "You’re not selling a house. You’re selling a decision.", "Four dimensions of buyer commitment—and how to address all four."],
-  ["Strategy", "What’s everyone else doing?", "The difference between benchmarking and copying."],
-  ["Strategy", "The five constraints", "A diagnostic for land, capital, people, trades, and sales."],
-  ["Marketing", "Silent salesmen", "The touchpoints that sell when your team is not there."],
-  ["Construction", "The fog of construction", "What friction teaches us about cycle time and scheduling."],
-];
+export default async function ArticlesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
+  const all = await listArticles();
+  const categories = [...new Set(all.map((a) => a.category))].sort();
+  const active = category && categories.includes(category) ? category : null;
+  const posts = active ? all.filter((a) => a.category === active) : all;
+  const [lead, ...rest] = posts;
 
-export default function ArticlesPage() {
   return <PageShell>
-    <SubpageHero eyebrow="Articles & insights" title="Ideas made useful." intro="More than 200 articles on homebuilding strategy, operations, and leadership—written from 54 years of building, consulting, and coaching." />
-    <section className="article-index"><div className="filter-row" aria-label="Article categories"><span className="active">All</span><span>Pricing</span><span>Land planning</span><span>Sales</span><span>Product</span><span>Leadership</span><span>Construction</span></div><div className="article-list">{posts.map(([tag, title, copy], i) => <article key={title}><span className="article-index-number">{String(i + 1).padStart(2, "0")}</span><div><p className="tag">{tag}</p><h2>{title}</h2><p>{copy}</p></div><span className="coming">Coming soon</span></article>)}</div><p className="archive-note">Article archive migration is in progress. The complete 200+ article library will be available here, organized by topic and searchable.</p></section>
+    <SubpageHero
+      eyebrow="Articles & insights"
+      title="Ideas made useful."
+      intro="200+ articles on homebuilding strategy, pricing, operations and leadership. Browse a sampling of 12 here."
+    />
+
+    <section className="article-index">
+      <nav className="filter-row" aria-label="Filter articles by category">
+        <Link href="/articles" className={active ? "" : "active"}>
+          All <span className="filter-count">{all.length}</span>
+        </Link>
+        {categories.map((name) => (
+          <Link
+            key={name}
+            href={`/articles?category=${encodeURIComponent(name)}`}
+            className={active === name ? "active" : ""}
+          >
+            {name} <span className="filter-count">{all.filter((a) => a.category === name).length}</span>
+          </Link>
+        ))}
+      </nav>
+
+      {lead && (
+        <Link href={`/articles/${lead.slug}`} className="article-lead">
+          <div className="article-lead-image"><img src={lead.cover} alt="" /></div>
+          <div className="article-lead-copy">
+            <p className="tag">{lead.category} · {lead.minutes} min read</p>
+            <h2>{lead.title}</h2>
+            <p className="article-lead-kicker">{lead.kicker || excerpt(lead.body)}</p>
+            <span className="read-more">Read article <ArrowIcon /></span>
+          </div>
+        </Link>
+      )}
+
+      <div className="article-list">
+        {rest.map((post, i) => (
+          <article key={post.slug}>
+            <span className="article-index-number">{String(i + 2).padStart(2, "0")}</span>
+            <div>
+              <p className="tag">
+                {post.category} · {post.minutes} min read
+                {post.date && ` · ${formatArticleDate(post.date)}`}
+              </p>
+              <h2><Link href={`/articles/${post.slug}`}>{post.title}</Link></h2>
+              <p>{post.kicker || excerpt(post.body)}</p>
+              <p className="article-byline">{post.author}</p>
+            </div>
+            <Link className="article-open" href={`/articles/${post.slug}`} aria-label={`Read ${post.title}`}>
+              <ArrowIcon />
+            </Link>
+          </article>
+        ))}
+      </div>
+
+      {posts.length === 0 && <p className="archive-note">No articles in this category yet.</p>}
+    </section>
   </PageShell>;
 }
-

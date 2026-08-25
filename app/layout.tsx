@@ -16,12 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: baseUrl,
     title: { default: "Home Builders Network", template: "%s | Home Builders Network" },
     description: "Land planning, home plans, and operator-level consulting that make home builders more profitable.",
-    icons: { icon: "/favicon.svg" },
+    icons: { icon: [{ url: "/brand/favicon.png", type: "image/png" }] },
     openGraph: {
       type: "website",
       title: "Home Builders Network",
       description: "We make builders more profitable.",
-      images: [{ url: new URL("/og.png", baseUrl).toString(), width: 1731, height: 909, alt: "Home Builders Network — We make builders more profitable." }],
+      images: [{ url: new URL("/og.png", baseUrl).toString(), width: 1200, height: 630, alt: "Home Builders Network — We make builders more profitable." }],
     },
     twitter: { card: "summary_large_image", title: "Home Builders Network", description: "We make builders more profitable.", images: [new URL("/og.png", baseUrl).toString()] },
   };

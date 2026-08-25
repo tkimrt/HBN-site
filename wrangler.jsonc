@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hbn-website",
+  // Must not exceed what the installed workerd supports (miniflare in this
+  // version tops out at 2026-05-22); vinext otherwise stamps today's date and
+  // local dev refuses to start.
+  "compatibility_date": "2026-05-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./worker/index.ts",
+  "assets": {
+    "directory": "dist/client",
+    "not_found_handling": "none",
+    "binding": "ASSETS"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hbn-db",
+      "database_id": "08605aa6-66d5-472a-8b3e-72d791c4e6f2"
+    }
+  ],
+
+  // R2 holds PDFs and cover images uploaded through /admin. The binding name
+  // must stay "BUCKET" — db/storage.ts reads env.BUCKET.
+  "r2_buckets": [
+    { "binding": "BUCKET", "bucket_name": "hbn-files" }
+  ]
+}
