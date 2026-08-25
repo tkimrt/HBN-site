@@ -49,7 +49,7 @@ export async function storeFile(
     return `/files/${key}`;
   }
   throw new Error(
-    "File storage is not configured. Add a Blob store to the Vercel project (BLOB_READ_WRITE_TOKEN)."
+    "File storage is not configured. Set BLOB_READ_WRITE_TOKEN in the host's environment variables."
   );
 }
 

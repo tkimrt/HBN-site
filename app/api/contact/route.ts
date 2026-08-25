@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          detail.includes("no such table") || detail.includes("unavailable")
+          detail.includes("no such table") || detail.includes("unavailable") || detail.includes("not configured")
             ? "The form is not connected yet. Please call 800 823 4344 or email admin@hbnnet.com."
             : "Something went wrong sending that. Please email admin@hbnnet.com.",
       },
