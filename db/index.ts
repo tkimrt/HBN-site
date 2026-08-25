@@ -10,18 +10,31 @@ import * as schema from "./schema";
 
 let client: Client | undefined;
 
+/** Local-file mode is explicit: `next dev`, or LOCAL_DATA=1 (used by the test
+ *  harness and local `next start`). Never inferred from the host — a managed
+ *  container's disk accepts writes and then loses them on restart. */
+function localDataAllowed(): boolean {
+  return process.env.NODE_ENV === "development" || process.env.LOCAL_DATA === "1";
+}
+
 export function getDb() {
-  client ??= createClient(
-    process.env.DATABASE_URL
-      ? { url: process.env.DATABASE_URL, authToken: process.env.DATABASE_AUTH_TOKEN }
-      : { url: "file:.data/local.db" }
-  );
+  if (!client) {
+    if (process.env.DATABASE_URL) {
+      client = createClient({
+        url: process.env.DATABASE_URL,
+        authToken: process.env.DATABASE_AUTH_TOKEN,
+      });
+    } else if (localDataAllowed()) {
+      client = createClient({ url: "file:.data/local.db" });
+    } else {
+      throw new Error(
+        "DATABASE_URL is not configured. Set it (with DATABASE_AUTH_TOKEN) in the host's environment variables."
+      );
+    }
+  }
   return drizzle(client, { schema });
 }
 
-/** True when a real (remote) database is configured, or we're on a dev machine
- *  where the file fallback works. On Vercel without DATABASE_URL the filesystem
- *  is not writable, so publishing genuinely is unavailable. */
 export function hasDatabase(): boolean {
-  return Boolean(process.env.DATABASE_URL) || !process.env.VERCEL;
+  return Boolean(process.env.DATABASE_URL) || process.env.NODE_ENV === "development" || process.env.LOCAL_DATA === "1";
 }

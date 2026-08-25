@@ -14,9 +14,10 @@ function blobToken(): string {
   return process.env.BLOB_READ_WRITE_TOKEN ?? "";
 }
 
-/** Local-file mode: development machines, where the filesystem is writable. */
+/** Local-file mode is explicit (next dev, or LOCAL_DATA=1) — see db/index.ts. */
 function localMode(): boolean {
-  return !blobToken() && !process.env.VERCEL;
+  if (blobToken()) return false;
+  return process.env.NODE_ENV === "development" || process.env.LOCAL_DATA === "1";
 }
 
 export function hasStorage(): boolean {

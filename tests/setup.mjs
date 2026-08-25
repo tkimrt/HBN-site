@@ -12,7 +12,7 @@ const server = spawn("npx", ["next", "start", "-p", String(PORT)], {
   // Fully detached from our stdio and unref'd, so the test process can exit
   // the moment the suite finishes instead of being held open by child pipes.
   stdio: "ignore",
-  env: { ...process.env },
+  env: { ...process.env, LOCAL_DATA: "1" },
 });
 server.unref();
 process.on("exit", () => server.kill("SIGTERM"));
