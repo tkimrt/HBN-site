@@ -1,0 +1,19 @@
+name: Keep-alive ping
+
+# Prevents Supabase's free-tier pause (7 days without activity) by loading the
+# homepage daily — its article and event queries touch Postgres through the
+# pooler, which counts as activity. Runs at an off-peak minute because GitHub
+# delays on-the-hour crons. Manual runs: Actions tab -> Keep-alive ping -> Run.
+on:
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Load the homepage
+        run: |
+          curl -fsS -m 30 -o /dev/null -w "home: HTTP %{http_code} in %{time_total}s\n" \
+            https://green-river-09a1ee50f.7.azurestaticapps.net/
