@@ -1,48 +1,34 @@
 #!/usr/bin/env node
 /**
- * Apply the generated Drizzle migrations to the libSQL database.
+ * Apply the drizzle/ migrations.
  *
- *   npm run db:migrate                          # local file (.data/local.db)
- *   DATABASE_URL=libsql://... DATABASE_AUTH_TOKEN=... npm run db:migrate
+ *   DATABASE_URL=postgres://... node scripts/apply-migrations.mjs   # Supabase
+ *   LOCAL_DATA=1 node scripts/apply-migrations.mjs                  # local PGlite
  *
- * Statements are made idempotent, so re-running is safe and only new
- * migrations take effect.
+ * Uses drizzle's official migrator, so applied migrations are journaled and
+ * re-running is a no-op.
  */
-import { createClient } from "@libsql/client";
-import { mkdirSync, readFileSync, readdirSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+const url = process.env.DATABASE_URL;
 
-const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const url = process.env.DATABASE_URL ?? "file:.data/local.db";
-
-if (url.startsWith("file:")) {
-  mkdirSync(path.join(root, path.dirname(url.slice(5))), { recursive: true });
-}
-
-const client = createClient({ url, authToken: process.env.DATABASE_AUTH_TOKEN });
-
-const migrationsDir = path.join(root, "drizzle");
-const migrations = readdirSync(migrationsDir).filter((f) => f.endsWith(".sql")).sort();
-if (!migrations.length) {
-  console.error("No migrations in drizzle/. Run `npm run db:generate` first.");
+if (url) {
+  const { drizzle } = await import("drizzle-orm/postgres-js");
+  const { migrate } = await import("drizzle-orm/postgres-js/migrator");
+  const { default: postgres } = await import("postgres");
+  const client = postgres(url, { prepare: false, max: 1 });
+  await migrate(drizzle(client), { migrationsFolder: "./drizzle" });
+  await client.end();
+  console.log("migrations applied to", url.replace(/:[^:@/]+@/, ":****@"));
+} else if (process.env.LOCAL_DATA === "1" || !process.env.CI) {
+  const { drizzle } = await import("drizzle-orm/pglite");
+  const { migrate } = await import("drizzle-orm/pglite/migrator");
+  const { PGlite } = await import("@electric-sql/pglite");
+  const { mkdirSync } = await import("node:fs");
+  mkdirSync(".data/pg", { recursive: true });
+  const client = new PGlite(".data/pg");
+  await migrate(drizzle(client), { migrationsFolder: "./drizzle" });
+  await client.close();
+  console.log("migrations applied to local PGlite (.data/pg)");
+} else {
+  console.error("Set DATABASE_URL (Supabase) or LOCAL_DATA=1 (local PGlite).");
   process.exit(1);
 }
-
-for (const file of migrations) {
-  const statements = readFileSync(path.join(migrationsDir, file), "utf8")
-    .split("--> statement-breakpoint")
-    .map((statement) => statement.trim().replace(/;+\s*$/, ""))
-    .filter(Boolean)
-    .map((statement) =>
-      statement
-        .replace(/^CREATE TABLE\s+/i, "CREATE TABLE IF NOT EXISTS ")
-        .replace(/^CREATE UNIQUE INDEX\s+/i, "CREATE UNIQUE INDEX IF NOT EXISTS ")
-        .replace(/^CREATE INDEX\s+/i, "CREATE INDEX IF NOT EXISTS ")
-    );
-  console.log(`applying ${file}…`);
-  await client.executeMultiple(statements.join(";\n") + ";");
-}
-
-console.log(`\n${url} is up to date.`);
-client.close();

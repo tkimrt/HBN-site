@@ -8,6 +8,13 @@ import { setTimeout as sleep } from "node:timers/promises";
  */
 const PORT = 4123;
 
+// A migrated local database is a precondition, not an assumption.
+const { execFileSync } = await import("node:child_process");
+execFileSync(process.execPath, ["scripts/apply-migrations.mjs"], {
+  env: { ...process.env, LOCAL_DATA: "1" },
+  stdio: "ignore",
+});
+
 const server = spawn("npx", ["next", "start", "-p", String(PORT)], {
   // Fully detached from our stdio and unref'd, so the test process can exit
   // the moment the suite finishes instead of being held open by child pipes.

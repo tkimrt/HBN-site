@@ -147,42 +147,43 @@ compiled archive, which is what `npm test` exercises.
 
 ## Hosting
 
-The app is a standard Next.js 16 project. It runs on Vercel; the client's DNS
-stays at Network Solutions.
+Standard Next.js 16. The data layer is **Supabase** (one vendor: Postgres +
+file storage); the site itself runs on Azure Static Web Apps (current
+evaluation deployment) or any Next-capable host. The client's DNS stays at
+Network Solutions.
 
-- **Database** — libSQL via Drizzle. Local dev uses `file:.data/local.db`
-  (created by `npm run db:migrate`). Production uses Turso: set `DATABASE_URL`
-  (libsql://…) and `DATABASE_AUTH_TOKEN`.
-- **Uploads** — Vercel Blob in production (`BLOB_READ_WRITE_TOKEN`, added by
-  attaching a Blob store to the project). Local dev writes to `.data/uploads/`.
-- **Email** — Resend, unchanged: `RESEND_API_KEY`, `CONTACT_FROM`, `CONTACT_TO`.
+- **Database** — Postgres via Drizzle. Production: the Supabase *pooled*
+  connection string in `DATABASE_URL`. Local dev and tests use embedded
+  PGlite under `.data/pg` (`npm run db:migrate` creates it) — no services
+  needed offline.
+- **Uploads** — Supabase Storage (`SUPABASE_URL`,
+  `SUPABASE_SERVICE_ROLE_KEY`, optional `SUPABASE_STORAGE_BUCKET`, default
+  "files"; the bucket is created on first upload). Local dev writes to
+  `.data/uploads/`.
+- **Email** — Resend: `RESEND_API_KEY`, `CONTACT_FROM`, `CONTACT_TO`.
 
-### Deploying
+### Wiring a fresh Supabase project
 
-1. `npx vercel` from the project root (first run links the project; needs the
-   Pro plan — agency work counts as commercial use).
-2. Create a Turso database, run
-   `DATABASE_URL=libsql://… DATABASE_AUTH_TOKEN=… npm run db:migrate`,
-   then `node scripts/import-data.mjs` with the same env to copy events and
-   enquiries across from the old Cloudflare D1 database.
-3. Add the env vars above in the Vercel project settings, plus a Blob store.
-4. `npx vercel --prod`.
+1. Create the project at supabase.com, copy the pooled `DATABASE_URL`
+   (Connect → Transaction pooler) and the `service_role` key.
+2. `DATABASE_URL=... node scripts/apply-migrations.mjs`
+3. `DATABASE_URL=... node scripts/import-data.mjs` — copies events, enquiries
+   and articles from the legacy Cloudflare D1 database (needs `wrangler login`).
+4. Add the env vars to the host (Azure portal → Static Web App → Environment
+   variables), plus the Resend values.
 
-### Pointing hbnnet.com at it (records at Network Solutions)
+### Pointing hbnnet.com at the site (records at Network Solutions)
 
-    A      @     76.76.21.21
-    CNAME  www   cname.vercel-dns.com
-
-Nameservers do not move. Add both hostnames to the Vercel project first so it
-can issue certificates. Mail records (MX/SPF/DKIM) are untouched.
+Azure SWA: A record to the app's stable inbound IP + TXT validation (portal
+shows both under Custom domains). Nameservers do not move; mail records are
+untouched.
 
 ### Legacy Cloudflare deployment
 
-The previous Workers deployment (hbn-website.realtorch.workers.dev) still runs
-the pre-migration build and keeps working until the Vercel cutover. Do **not**
-run `npm run deploy:cloudflare` from this tree — the db and storage layers no
-longer target D1/R2. The wrangler config and worker/ entry are kept only until
-the cutover is confirmed, then can be deleted.
+hbn-website.realtorch.workers.dev still runs the pre-migration build (D1+R2)
+and keeps working until cutover. This tree can no longer deploy to Workers.
+Before retiring it, re-run `scripts/import-data.mjs` to catch any enquiries
+that arrived there since the last import.
 
 
 ## Before launch

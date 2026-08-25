@@ -1,13 +1,17 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { boolean, integer, pgTable, text } from "drizzle-orm/pg-core";
 
 /**
- * Articles written or uploaded through /admin. The ten pieces migrated from the
+ * Articles written or uploaded through /admin. The pieces migrated from the
  * old hbnnet.com archive live in `content/articles/` and are compiled into the
  * bundle; this table holds everything added since.
+ *
+ * Timestamps are ISO-8601 text: the app writes them explicitly and only ever
+ * sorts and displays them, and text kept the rows byte-compatible through the
+ * D1 -> Postgres migration.
  */
-export const articles = sqliteTable("articles", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const articles = pgTable("articles", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   kicker: text("kicker").notNull().default(""),
@@ -19,20 +23,20 @@ export const articles = sqliteTable("articles", {
   pdf: text("pdf").notNull().default(""),
   /** Markdown, rendered by app/markdown.tsx. */
   body: text("body").notNull().default(""),
-  published: integer("published", { mode: "boolean" }).notNull().default(true),
-  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  published: boolean("published").notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`now()::text`),
+  updatedAt: text("updated_at").notNull().default(sql`now()::text`),
 });
 
 export type ArticleRow = typeof articles.$inferSelect;
 
 /**
- * Speaking engagements managed through /admin/events. The currently announced
- * PCBC session is seeded in `content/events.ts` so the Speaking page and the
- * home page band still render before the database is provisioned.
+ * Speaking engagements managed through /admin/events. The seeded session in
+ * `content/events.ts` keeps the Speaking page and the home page band rendering
+ * before the database is provisioned.
  */
-export const events = sqliteTable("events", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const events = pgTable("events", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   /** Conference or host, e.g. "PCBC San Diego". */
   name: text("name").notNull(),
   /** Session title. */
@@ -44,9 +48,9 @@ export const events = sqliteTable("events", {
   /** Optional registration or session link. */
   url: text("url").notNull().default(""),
   cover: text("cover").notNull().default(""),
-  published: integer("published", { mode: "boolean" }).notNull().default(true),
-  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  published: boolean("published").notNull().default(true),
+  createdAt: text("created_at").notNull().default(sql`now()::text`),
+  updatedAt: text("updated_at").notNull().default(sql`now()::text`),
 });
 
 export type EventRow = typeof events.$inferSelect;
@@ -56,8 +60,8 @@ export type EventRow = typeof events.$inferSelect;
  * second, so a mail outage or a missing provider key can never lose one — the
  * admin inbox at /admin/enquiries reads straight from this table.
  */
-export const enquiries = sqliteTable("enquiries", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const enquiries = pgTable("enquiries", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   name: text("name").notNull(),
   company: text("company").notNull().default(""),
   email: text("email").notNull(),
@@ -66,8 +70,8 @@ export const enquiries = sqliteTable("enquiries", {
   message: text("message").notNull().default(""),
   /** "sent", "skipped" (no provider configured), or "failed: <reason>". */
   emailStatus: text("email_status").notNull().default(""),
-  handled: integer("handled", { mode: "boolean" }).notNull().default(false),
-  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  handled: boolean("handled").notNull().default(false),
+  createdAt: text("created_at").notNull().default(sql`now()::text`),
 });
 
 export type EnquiryRow = typeof enquiries.$inferSelect;
