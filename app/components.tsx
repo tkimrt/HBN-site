@@ -132,6 +132,28 @@ export function InlineLink({ href, children }: { href: string; children: React.R
   return <Link className="inline-link" href={href}>{children} <ArrowIcon /></Link>;
 }
 
+const ATLAS = "Atlas by RealTorch";
+
+/** Author line with every mention of Atlas by RealTorch linked to realtorch.ai. */
+export function AuthorCredit({ author }: { author: string }) {
+  if (!author.includes(ATLAS)) return <>{author}</>;
+  const parts = author.split(ATLAS);
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <a className="atlas-link" href="https://www.realtorch.ai" target="_blank" rel="noreferrer noopener">
+              {ATLAS}
+            </a>
+          )}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export function DownloadIcon() {
   return <span aria-hidden="true">↓</span>;
 }

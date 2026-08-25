@@ -5,7 +5,7 @@ const article: Article = {
   title: "The Psychological and Emotional Aspects of Pricing",
   kicker: "Value perception, scarcity, charm pricing and anchoring — what actually moves a buyer, and how to price for it.",
   category: "Pricing",
-  author: "Al Trellis",
+  author: "Al Trellis and Atlas by RealTorch",
   date: "",
   cover: "/images/art-pricing-psychology.jpg",
   pdf: "/articles/psychology-of-pricing.pdf",

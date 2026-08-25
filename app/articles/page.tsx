@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowIcon, PageShell, SubpageHero } from "../components";
+import { ArrowIcon, AuthorCredit, PageShell, SubpageHero } from "../components";
 import { excerpt } from "../markdown";
 import { formatArticleDate, listArticles } from "../../lib/articles";
 
@@ -63,7 +63,7 @@ export default async function ArticlesPage({
               </p>
               <h2><Link href={`/articles/${post.slug}`}>{post.title}</Link></h2>
               <p>{post.kicker || excerpt(post.body)}</p>
-              <p className="article-byline">{post.author}</p>
+              <p className="article-byline"><AuthorCredit author={post.author} /></p>
             </div>
             <Link className="article-open" href={`/articles/${post.slug}`} aria-label={`Read ${post.title}`}>
               <ArrowIcon />

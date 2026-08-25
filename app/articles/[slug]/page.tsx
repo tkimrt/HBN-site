@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowIcon, PageShell } from "../../components";
+import { ArrowIcon, AuthorCredit, PageShell } from "../../components";
 import { Markdown, excerpt } from "../../markdown";
 import { formatArticleDate, getArticle, listArticles } from "../../../lib/articles";
 
@@ -35,7 +35,7 @@ export default async function ArticlePage({ params }: Params) {
         <h1>{article.title}</h1>
         {article.kicker && <p className="article-standfirst">{article.kicker}</p>}
         <div className="article-meta">
-          <span>{article.author}</span>
+          <span><AuthorCredit author={article.author} /></span>
           {article.date && <span>{formatArticleDate(article.date)}</span>}
           <span>{article.minutes} min read</span>
         </div>

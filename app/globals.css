@@ -204,6 +204,8 @@ h1 em,h2 em { font-family:Georgia,serif; font-weight:400; }
 .article-index-number { align-self:start; color:var(--clay); font-weight:700; }
 .article-list h2 { max-width:850px; margin:10px 0 14px; font-size:clamp(28px,3.2vw,44px); }
 .article-list article div>p:last-child { color:var(--muted); }
+.atlas-link { text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }
+.atlas-link:hover { color:var(--clay); }
 .article-byline { margin:14px 0 0; font-size:13px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted)!important; }
 .article-open { display:grid; place-items:center; width:46px; height:46px; border-radius:50%; border:1px solid var(--line); color:var(--clay); transition:.2s ease; }
 .article-list article:hover .article-open { background:var(--clay); border-color:var(--clay); color:white; transform:rotate(45deg); }

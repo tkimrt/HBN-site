@@ -5,7 +5,7 @@ const article: Article = {
   title: "Five Modern Thinkers Every Executive Should Understand",
   kicker: "Kahneman, Foucault, Drucker, Rawls and Harari — plus the translators who made their ideas usable.",
   category: "Leadership",
-  author: "Al Trellis",
+  author: "Al Trellis and Atlas by RealTorch",
   date: "",
   cover: "/images/art-five-thinkers.jpg",
   pdf: "/articles/five-modern-thinkers.pdf",
