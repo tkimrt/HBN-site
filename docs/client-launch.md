@@ -82,10 +82,11 @@ Already pre-registered on our side. Two records:
 | TXT | `@` | `_zuaqtrlps0luegqe21qe775tyhysydo` |
 | A | `@` | *IP shown in Azure once the TXT validates (replaces `205.149.143.100`)* |
 
-If the A-record IP isn't available during the call, use Network Solutions'
-**domain forwarding** to send `hbnnet.com → https://www.hbnnet.com` instead —
-this matches exactly what the domain does today (it already redirects to www),
-and can be swapped for the A record later without the client.
+If the A-record IP isn't available during the call, **change nothing at the
+apex** — the old host it points at already redirects hbnnet.com to www, which
+now serves the new site. Free, and swapped for the real A record later without
+the client. Just don't cancel the old hosting account until that swap is done.
+(Network Solutions' own Web Forwarding costs $12.99/yr — never needed.)
 
 ### Propagation
 
@@ -115,8 +116,8 @@ Every record below lives on that one page; each section has an
 4. **CNAME section** — Alias `www`, choose "Other Host", value
    `green-river-09a1ee50f.7.azurestaticapps.net`, TTL 7200.
 5. **TXT section** — one more row: `@` = the Azure validation token above.
-6. **Apex** — edit the `@` A record to Azure's IP once shown; otherwise
-   **Web Forwarding** hbnnet.com → https://www.hbnnet.com for now.
+6. **Apex** — edit the `@` A record to Azure's IP once shown; otherwise leave
+   the `@` row untouched (old host keeps redirecting apex → www = new site).
 
 Host fields always take the short name (`send`, `www`, `@`) — the UI appends
 `.hbnnet.com` itself.
