@@ -30,11 +30,14 @@ delivery to admin@hbnnet.com (and anyone else).
 
 At Network Solutions → hbnnet.com → **Advanced DNS**, add:
 
-| # | Type | Host field | Value | Priority |
-|---|------|-----------|-------|----------|
-| 1 | MX  | `send` | `feedback-smtp.<region>.amazonses.com` *(from Resend)* | 10 |
-| 2 | TXT | `send` | `v=spf1 include:amazonses.com ~all` | — |
-| 3 | TXT | `resend._domainkey.send` | `p=MIGf…` *(long DKIM key from Resend)* | — |
+| # | Type | Host field | Value |
+|---|------|-----------|-------|
+| 1 | TXT | `resend._domainkey.send` | `p=MIGf…IDAQAB` *(full DKIM key from Resend)* |
+| 2 | CNAME | `rsend.send` | `rsend.forge.rmta.net` |
+| 3 | CNAME | `send.send` | `send.forge.rmta.net` |
+
+*(Resend now verifies via CNAMEs — no MX record, so the old MX-editor concern
+below no longer applies.)*
 
 **The two traps:**
 - Network Solutions appends `.hbnnet.com` automatically. Enter host **`send`**,
@@ -106,11 +109,9 @@ Every record below lives on that one page; each section has an
 1. **TXT section** — add two rows: `send` = the SPF value, and
    `resend._domainkey.send` = the DKIM key. **Add rows — never edit the
    existing `v=spf1 include:spf.pwhosts.com` row** (that is their live email).
-2. **MX section** — new row: Host `send`, Priority 10, server
-   `feedback-smtp.<region>.amazonses.com`. **Stop-sign:** if the MX editor has
-   no Host/Alias column, do NOT save — a root MX would siphon real inbound
-   mail. Leave it for a NetSol support chat ("add an MX for the subdomain
-   send.hbnnet.com") and carry on.
+2. **CNAME section** — two rows: `rsend.send` -> `rsend.forge.rmta.net` and
+   `send.send` -> `send.forge.rmta.net` (choose "Other Host"). No MX record
+   is needed.
 3. **A records section** — delete the `www` row (205.149.143.100); NetSol
    won't take a CNAME while an A exists for the same host.
 4. **CNAME section** — Alias `www`, choose "Other Host", value
