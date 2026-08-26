@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Load the homepage
+        # Generous timeout + retries: after idle, the SWA backend cold-starts
+        # and the first response can take ~30s — the ping must outlast it.
         run: |
-          curl -fsS -m 30 -o /dev/null -w "home: HTTP %{http_code} in %{time_total}s\n" \
+          curl -fsS -m 90 --retry 2 --retry-delay 15 --retry-all-errors -o /dev/null \
+            -w "home: HTTP %{http_code} in %{time_total}s\n" \
             https://green-river-09a1ee50f.7.azurestaticapps.net/
