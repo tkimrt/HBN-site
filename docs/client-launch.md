@@ -118,7 +118,7 @@ setup. Nothing in Part 1 or 2 can affect their existing mailbox either way.
 - [ ] Point the daily keep-alive ping at `https://www.hbnnet.com`
 - [ ] `wrangler login`, sweep late enquiries from the old Cloudflare database,
       then retire the old Worker, D1 and R2
-- [ ] Decide Supabase Pro ($25/mo: no idle-pause + daily backups) vs free tier
-      with our ping + a weekly backup job — recommend Pro, billed to client
+- [x] Supabase Pro decided ($25/mo — no idle-pause, daily backups; upgrade in
+      the Supabase org's Billing page, then confirm the plan shows on the project)
 - [ ] Hand over the admin sign-in (`/admin`) and walk the client through
       publishing an article
