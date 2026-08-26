@@ -95,6 +95,34 @@ site keeps serving until the records flip, so there is no downtime.
 
 ---
 
+## Network Solutions walkthrough (the actual clicks)
+
+**Once:** networksolutions.com → Login → Account Manager → **My Domain Names**
+→ hbnnet.com → **Manage** → **Change Where Domain Points → Advanced DNS**.
+Every record below lives on that one page; each section has an
+**Edit … Records** button and finishes with **Continue → Save Changes**.
+
+1. **TXT section** — add two rows: `send` = the SPF value, and
+   `resend._domainkey.send` = the DKIM key. **Add rows — never edit the
+   existing `v=spf1 include:spf.pwhosts.com` row** (that is their live email).
+2. **MX section** — new row: Host `send`, Priority 10, server
+   `feedback-smtp.<region>.amazonses.com`. **Stop-sign:** if the MX editor has
+   no Host/Alias column, do NOT save — a root MX would siphon real inbound
+   mail. Leave it for a NetSol support chat ("add an MX for the subdomain
+   send.hbnnet.com") and carry on.
+3. **A records section** — delete the `www` row (205.149.143.100); NetSol
+   won't take a CNAME while an A exists for the same host.
+4. **CNAME section** — Alias `www`, choose "Other Host", value
+   `green-river-09a1ee50f.7.azurestaticapps.net`, TTL 7200.
+5. **TXT section** — one more row: `@` = the Azure validation token above.
+6. **Apex** — edit the `@` A record to Azure's IP once shown; otherwise
+   **Web Forwarding** hbnnet.com → https://www.hbnnet.com for now.
+
+Host fields always take the short name (`send`, `www`, `@`) — the UI appends
+`.hbnnet.com` itself.
+
+---
+
 ## What does NOT change (say this up front)
 
 - **Nameservers stay at Network Solutions** (`ns39/ns40.worldnic.com`)
