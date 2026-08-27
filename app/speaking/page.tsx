@@ -31,7 +31,7 @@ export default async function SpeakingPage() {
     <SubpageHero
       eyebrow="Speaking & presentations"
       title="Make the room smarter."
-      intro="Al has delivered more than 500 presentations to building and corporate audiences. Every program is customised to the client."
+      intro="Al has delivered more than 500 presentations to building and corporate audiences. Every program is customized to the client."
       image="/images/speaking.jpg"
       imageAlt="A conference audience facing a lit stage"
       tone="green"

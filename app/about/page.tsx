@@ -7,13 +7,13 @@ const team = [
     initials: "AT",
     name: "Al Trellis",
     role: "Founder & President — Strategy & Construction",
-    copy: "Four decades as a custom builder, engineer and consultant. Al created the 15 Functions of Home Building framework and the Totally Integrated Neighborhood Solutions methodology, has authored several books and more than 200 articles, and is recognised across the industry for finding profit and productivity where others see none.",
+    copy: "Over five decades as a custom builder, engineer and consultant, and teacher. Al created the 15 Functions of Home Building framework and the Totally Integrated Neighborhood Solutions methodology, has authored several books and more than 200 articles, and is recognized across the industry for finding profit and productivity where others see none.",
   },
   {
     initials: "BW",
     name: "Bill Watkins",
     role: "Founder & Vice President — Design & Land Planning",
-    copy: "An engineer and former builder who specialises in plans that are genuinely buildable and genuinely cost-effective, and in land strategies coordinated with the product that will sit on them. Bill’s particular strength is developing targeted product offerings for specific markets.",
+    copy: "An engineer and former builder who specializes in plans that are genuinely buildable and genuinely cost-effective, and in land strategies coordinated with the product that will sit on them. Bill’s particular strength is developing targeted product offerings for specific markets.",
   },
   {
     initials: "BT",

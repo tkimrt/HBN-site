@@ -63,7 +63,7 @@ export function EventEditor({ initial }: { initial?: SpeakingEvent }) {
             onChange={(e) => set("name", e.target.value)}
             placeholder="PCBC San Diego"
           />
-          <span className="field-note">The conference or host organisation.</span>
+          <span className="field-note">The conference or host organization.</span>
         </label>
 
         <label>Session title

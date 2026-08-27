@@ -15,7 +15,7 @@ const handouts = [
 const elsewhere = [
   ["Values That Matter™", "More than 70 flexible, economical plans built over a thousand times by 30+ builders.", "https://www.valuesthatmatter.net"],
   ["52 Builder Tips", "One practical idea a week, for a year.", "http://52buildertips.com"],
-  ["HBN Plans", "The searchable concept plan catalogue and neighbourhood collections.", "http://www.hbnplans.com/"],
+  ["HBN Plans", "The searchable concept plan catalog and neighborhood collections.", "http://www.hbnplans.com/"],
   ["Builder to Builder", "The podcast and video conversations, on Facebook.", "https://www.facebook.com/BuildertoBuilder"],
   ["HBN on YouTube", "Recorded sessions and short takes from Al.", "https://www.youtube.com/user/HomeBuildersNetwork"],
 ];

@@ -3,7 +3,7 @@ import { InlineLink, PageShell, SectionHeading, SubpageHero } from "../component
 export const metadata = { title: "Design Services" };
 
 const services = [
-  ["01", "Concept plan library", "Over 400 concept plans, available overnight", "A searchable database of concept plans delivered at ⅛\" scale with coloured elevation renderings — built to help you develop a new product line or extend the one you have."],
+  ["01", "Concept plan library", "Over 400 concept plans, available overnight", "A searchable database of concept plans delivered at ⅛\" scale with colored elevation renderings — built to help you develop a new product line or extend the one you have."],
   ["02", "Portfolio design", "Homes that work as a collection", "A coordinated set of designs for a single development, so the streetscape has visual interest and architectural delight while staying practical to build and easy to sell."],
   ["03", "Elevation variations", "More curb appeal, same floor plan", "Add multiple elevations to plans you already build. You simplify construction and increase efficiency without carrying the cost of duplicate floor plans."],
   ["04", "Land planning", "Raw land to finished lots", "Maximise value through the conversion — lot mix optimisation, product fit, and a pricing strategy that captures what the plan created."],

@@ -20,7 +20,7 @@ export default function RenderingsPage() {
       title="Show the home before you build it."
       intro="Buyers who cannot picture the home cannot commit to it. Renderings remove that uncertainty, and open the conversation about upgrades before the buyer has decided what they want."
       image="/images/renderings.jpg"
-      imageAlt="A watercolour architectural elevation rendering pinned to a studio wall"
+      imageAlt="A watercolor architectural elevation rendering pinned to a studio wall"
     />
 
     <section className="collection-section">
