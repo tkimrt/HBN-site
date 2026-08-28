@@ -37,9 +37,15 @@ export default async function AdminPage() {
         <strong>File storage</strong>
         <span>{hasStorage() ? "File storage connected" : "File storage not configured — uploads will fail"}</span>
       </div>
-      <div className="is-warn">
+      <div className={process.env.ADMIN_PASSWORD ? "is-ok" : "is-warn"}>
         <strong>Access</strong>
-        <span>Unprotected. Add authentication before launch.</span>
+        <span>
+          {process.env.ADMIN_PASSWORD
+            ? "Password-protected"
+            : process.env.NODE_ENV === "development" || process.env.LOCAL_DATA === "1"
+              ? "Open (local dev — the gate only applies in production)"
+              : "Locked: set ADMIN_PASSWORD on the host to enable sign-in"}
+        </span>
       </div>
     </section>
 

@@ -17,8 +17,12 @@ h1 em,h2 em { font-family:Georgia,serif; font-weight:400; }
 .button span,.inline-link span,.header-cta span { display:grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--clay); color:white; transition:.2s ease; }
 .button:hover,.inline-link:hover { opacity:.75; }
 .button:hover span,.inline-link:hover span { transform:rotate(45deg); }
-.button-light { color:white; }
-.button-dark { border:0; color:white; background:var(--forest); cursor:pointer; }
+/* Explicit per-state colors: the global a:visited reset above otherwise
+   outranks these classes once a link is in history — dark ink on the dark
+   pill. Type+class+pseudo beats the bare reset in specificity. */
+.button-light, a.button-light:link, a.button-light:visited, a.button-light:active { color:#fff; }
+.button-dark { border:0; background:var(--forest); cursor:pointer; }
+.button-dark, a.button-dark:link, a.button-dark:visited, a.button-dark:active { color:#fff; }
 .inline-link { display:inline-flex; align-items:center; gap:12px; font-size:16px; font-weight:700; }
 .inline-link span { width:25px; height:25px; }
 
