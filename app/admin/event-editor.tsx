@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ImageField } from "./image-field";
 import { formatEventDate, type SpeakingEvent } from "../../content/events";
+import { ArrowIcon } from "../components";
 
 const EMPTY: SpeakingEvent = {
   id: 0,
@@ -123,7 +124,7 @@ export function EventEditor({ initial }: { initial?: SpeakingEvent }) {
         <div className="editor-actions">
           <button className="button button-dark" type="button" onClick={() => void save()} disabled={status.kind === "busy"}>
             {status.kind === "busy" ? "Working…" : "Save event"}
-            <span aria-hidden="true">↗</span>
+            <ArrowIcon />
           </button>
           {draft.id > 0 && (
             <button className="link-button is-danger" type="button" onClick={() => void remove()}>

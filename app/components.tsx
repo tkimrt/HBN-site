@@ -15,8 +15,16 @@ const moreItems = [
   ["About", "/about"],
 ] as const;
 
+/** Inline SVGs, not the ↗/↓ characters: iOS gives those Unicode arrows emoji
+ *  presentation, drawing a color glyph over the styled disc. */
 export function ArrowIcon() {
-  return <span aria-hidden="true">↗</span>;
+  return (
+    <span aria-hidden="true">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2.5 9.5 9.5 2.5M4 2.5h5.5V8" />
+      </svg>
+    </span>
+  );
 }
 
 export function Logo({ variant = "dark" }: { variant?: "dark" | "light" }) {
@@ -155,5 +163,11 @@ export function AuthorCredit({ author }: { author: string }) {
 }
 
 export function DownloadIcon() {
-  return <span aria-hidden="true">↓</span>;
+  return (
+    <span aria-hidden="true">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 1.5v8M2.5 6.5 6 10l3.5-3.5" />
+      </svg>
+    </span>
+  );
 }

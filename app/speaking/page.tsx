@@ -1,4 +1,4 @@
-import { PageShell, SectionHeading, SubpageHero } from "../components";
+import { ArrowIcon, PageShell, SectionHeading, SubpageHero } from "../components";
 import { formatEventDate, listUpcomingEvents } from "../../lib/events";
 import { FORMAT_ORDER, PROGRAM_FORMATS, programs, type ProgramFormat } from "../../content/programs";
 
@@ -49,7 +49,7 @@ export default async function SpeakingPage() {
           {featured.summary && <p>{featured.summary}</p>}
           {featured.url && (
             <a className="inline-link" href={featured.url} target="_blank" rel="noreferrer noopener">
-              Registration <span aria-hidden="true">↗</span>
+              Registration <ArrowIcon />
             </a>
           )}
         </div>
@@ -67,7 +67,7 @@ export default async function SpeakingPage() {
               <p>{event.title}</p>
               {event.url && (
                 <a className="inline-link" href={event.url} target="_blank" rel="noreferrer noopener">
-                  Registration <span aria-hidden="true">↗</span>
+                  Registration <ArrowIcon />
                 </a>
               )}
             </article>

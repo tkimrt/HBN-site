@@ -4,6 +4,7 @@ import { useRef, useState, type DragEvent } from "react";
 import { Markdown } from "../markdown";
 import { ImageField } from "./image-field";
 import { CATEGORIES } from "../../content/articles/types";
+import { ArrowIcon } from "../components";
 
 export type EditorArticle = {
   slug: string;
@@ -221,7 +222,7 @@ export function ArticleEditor({ initial, mode }: { initial?: EditorArticle; mode
 
         <button className="button button-dark" type="button" onClick={() => void save()} disabled={status.kind === "busy"}>
           {status.kind === "busy" ? "Working…" : draft.published ? "Publish article" : "Save draft"}
-          <span aria-hidden="true">↗</span>
+          <ArrowIcon />
         </button>
       </div>
 

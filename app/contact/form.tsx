@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { ArrowIcon } from "../components";
 
 const INTERESTS = [
   "Coaching & consulting",
@@ -95,7 +96,7 @@ export function ContactForm() {
       {error && <p className="form-error" role="alert">{error}</p>}
 
       <button className="button button-dark" type="submit" disabled={state === "sending"}>
-        {state === "sending" ? "Sending…" : "Send message"} <span aria-hidden="true">↗</span>
+        {state === "sending" ? "Sending…" : "Send message"} <ArrowIcon />
       </button>
     </form>
   );
