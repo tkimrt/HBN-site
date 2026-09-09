@@ -2,7 +2,14 @@ import { PageShell, SectionHeading, SubpageHero } from "../components";
 
 export const metadata = { title: "About" };
 
-const team = [
+const team: {
+  initials: string;
+  name: string;
+  role: string;
+  copy: string;
+  /** Optional headshot; entries without one render their initials. */
+  photo?: string;
+}[] = [
   {
     initials: "AT",
     name: "Al Trellis",
@@ -54,7 +61,7 @@ export default function AboutPage() {
       <div className="team-grid">
         {team.map((person) => (
           <article key={person.name}>
-            {"photo" in person && person.photo
+            {person.photo
               ? <img className="team-photo" src={person.photo} alt="" />
               : <span className="team-initials">{person.initials}</span>}
             <h3>{person.name}</h3>
