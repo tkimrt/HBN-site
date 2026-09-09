@@ -5,7 +5,6 @@ export const metadata = { title: "About" };
 const team = [
   {
     initials: "AT",
-    photo: "/images/al-trellis.jpg",
     name: "Al Trellis",
     role: "Founder & President — Strategy & Construction",
     copy: "Over five decades as a custom builder, engineer and consultant, and teacher. Al created the 15 Functions of Home Building framework and the Totally Integrated Neighborhood Solutions methodology, has authored several books and more than 200 articles, and is recognized across the industry for finding profit and productivity where others see none.",
