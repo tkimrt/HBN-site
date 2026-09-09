@@ -5,6 +5,7 @@ export const metadata = { title: "About" };
 const team = [
   {
     initials: "AT",
+    photo: "/images/al-trellis.jpg",
     name: "Al Trellis",
     role: "Founder & President — Strategy & Construction",
     copy: "Over five decades as a custom builder, engineer and consultant, and teacher. Al created the 15 Functions of Home Building framework and the Totally Integrated Neighborhood Solutions methodology, has authored several books and more than 200 articles, and is recognized across the industry for finding profit and productivity where others see none.",
@@ -34,7 +35,7 @@ export default function AboutPage() {
 
     <section className="profile-section">
       <div className="profile-card">
-        <span className="profile-initials">AT</span>
+        <img className="profile-photo" src="/images/al-trellis.jpg" alt="Al Trellis" width={251} height={359} />
         <div><p>Al Trellis</p><span>Founder &amp; President</span><span>Home Builders Network</span></div>
       </div>
       <div className="profile-copy">
@@ -54,7 +55,9 @@ export default function AboutPage() {
       <div className="team-grid">
         {team.map((person) => (
           <article key={person.name}>
-            <span className="team-initials">{person.initials}</span>
+            {"photo" in person && person.photo
+              ? <img className="team-photo" src={person.photo} alt="" />
+              : <span className="team-initials">{person.initials}</span>}
             <h3>{person.name}</h3>
             <p className="team-role">{person.role}</p>
             <p>{person.copy}</p>
