@@ -488,7 +488,9 @@ h1 em,h2 em { font-family:Georgia,serif; font-weight:400; }
   .subhero.has-image { grid-template-columns:1fr; }
   .subhero-image { min-height:520px; }
   .profile-section { grid-template-columns:1fr; }
-  .profile-card { min-height:450px; }
+  /* Stacked: the card must stay portrait-shaped. Full-width made it a 3:1
+     letterbox that showed only the top of the head. */
+  .profile-card { min-height:520px; width:min(100%,420px); }
   .footer-grid { grid-template-columns:2fr 1fr 1fr; }
   .footer-grid>div:last-child { grid-column:2 / 4; }
   .editor { grid-template-columns:1fr; gap:44px; }
