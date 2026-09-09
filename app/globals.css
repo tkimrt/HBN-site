@@ -143,11 +143,14 @@ h1 em,h2 em { font-family:Georgia,serif; font-weight:400; }
 .section-heading>p:last-child { max-width:680px; color:var(--muted); font-size:23px; }
 
 .profile-section { padding:130px clamp(24px,7vw,116px); display:grid; grid-template-columns:.7fr 1.3fr; gap:8vw; }
-.profile-card { min-height:520px; background:var(--clay); color:white; padding:40px; display:flex; flex-direction:column; justify-content:space-between; }
+/* Photo bleeds to the card edges; the clay block below carries the name. One
+   composed unit instead of a small white rectangle floating on orange. */
+.profile-card { min-height:520px; background:var(--clay); color:white; display:flex; flex-direction:column; overflow:hidden; }
+.profile-card > div { padding:30px 36px 36px; }
 .profile-initials { font-family:var(--font-display); font-size:clamp(100px,14vw,220px); line-height:.8; letter-spacing:-.12em; }
 /* Displayed no wider than ~1x its 251px source, so it stays sharp on retina-ish
    densities instead of stretching soft across the card. */
-.profile-photo { width:min(235px,70%); height:auto; border-radius:6px; }
+.profile-photo { width:100%; flex:1; min-height:0; object-fit:cover; object-position:center 22%; }
 .team-photo { width:60px; height:60px; margin-bottom:28px; border-radius:50%; object-fit:cover; object-position:center top; }
 .profile-card p { margin:0; font-size:24px; font-weight:700; }
 /* Block so the role and the company stack rather than running together. */
