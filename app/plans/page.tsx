@@ -5,7 +5,7 @@ export const metadata = { title: "Home Plans" };
 const collections = [
   ["01", "HBN Plans", "Exclusive concept plans & neighborhood collections", "A searchable catalog of copyrighted concept plans, available individually or as curated six-plan neighborhood collections—with geographic exclusivity for your market.", "https://hbnplans.com/", "See HBN Plans"],
   ["02", "Values That Matter\u2122", "Proven plans. Built over 1,000 times.", "More than 70 flexible, economical plans designed around affordability, lifestyle, functionality, aesthetics, and sustainability. Built by 30+ builders nationwide.", "https://www.valuesthatmatter.net", "See Values That Matter"],
-  ["03", "Royal Oaks Design", "From concept to construction-ready", "HBN/Royal Oaks Design designed plans with full construction drawing capability and a modification team for builders who need a plan tailored to their specifications.", "https://royaloaksdesign.com/search?q=hbn", "See Royal Oaks Design"],
+  ["03", "Royal Oaks Design", "From concept to construction-ready", "HBN/Royal Oaks Design designed plans with full construction drawing capability and a modification team for builders who need a plan tailored to their specifications.", "https://royaloaksdesign.com/collections/hbn-plans", "See Royal Oaks Design"],
 ];
 
 export default function PlansPage() {
