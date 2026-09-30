@@ -25,6 +25,17 @@ if (url) {
   const { mkdirSync } = await import("node:fs");
   mkdirSync(".data/pg", { recursive: true });
   const client = new PGlite(".data/pg");
+  // Supabase provides these PostgREST roles. Mirror them in the local database
+  // so security migrations are exercised by the same migration path in tests.
+  for (const role of ["anon", "authenticated"]) {
+    const result = await client.query(
+      "select 1 from pg_roles where rolname = $1",
+      [role],
+    );
+    if (result.rows.length === 0) {
+      await client.query(`create role "${role}" nologin`);
+    }
+  }
   await migrate(drizzle(client), { migrationsFolder: "./drizzle" });
   await client.close();
   console.log("migrations applied to local PGlite (.data/pg)");

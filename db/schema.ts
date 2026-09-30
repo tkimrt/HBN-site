@@ -26,7 +26,7 @@ export const articles = pgTable("articles", {
   published: boolean("published").notNull().default(true),
   createdAt: text("created_at").notNull().default(sql`now()::text`),
   updatedAt: text("updated_at").notNull().default(sql`now()::text`),
-});
+}).enableRLS();
 
 export type ArticleRow = typeof articles.$inferSelect;
 
@@ -51,7 +51,7 @@ export const events = pgTable("events", {
   published: boolean("published").notNull().default(true),
   createdAt: text("created_at").notNull().default(sql`now()::text`),
   updatedAt: text("updated_at").notNull().default(sql`now()::text`),
-});
+}).enableRLS();
 
 export type EventRow = typeof events.$inferSelect;
 
@@ -72,6 +72,6 @@ export const enquiries = pgTable("enquiries", {
   emailStatus: text("email_status").notNull().default(""),
   handled: boolean("handled").notNull().default(false),
   createdAt: text("created_at").notNull().default(sql`now()::text`),
-});
+}).enableRLS();
 
 export type EnquiryRow = typeof enquiries.$inferSelect;
